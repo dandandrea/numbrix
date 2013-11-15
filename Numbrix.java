@@ -1,61 +1,86 @@
-import java.util.ArrayList;
-import java.util.Scanner;
-import java.util.InputMismatchException;
+import java.io.*;
+import java.util.*;
 
 class Numbrix {
     public static void main(String[] args) throws NumbrixException {
-        // Display some basic instructions
-        System.out.println("");
-        System.out.println("            Welcome to Numbrix!");
-        System.out.println("-----------------------------------------------");
-        System.out.println("Enter your move in row column value format");
-        System.out.println("For example, enter 3 4 2 to place a 2 at (3, 4)");
-        System.out.println("Place a zero to clear a position");
-        System.out.println("Enter quit or exit to stop playing");
-        System.out.println("-----------------------------------------------");
-        System.out.println("");
+	    // Introductory message
+        System.out.println("-------------------");
+        System.out.println("Welcome to Numbrix!");
+        System.out.println("-------------------");
+		System.out.println("");
+
+		// The board
+		Board board = null;
 
         // Play another game loop
         while (true) {
             // Get board size
-            System.out.println("Which board do you want?");
-            System.out.println("Enter a number between 1 and 2, inclusive");
-            int boardNumber = 0;
+            System.out.println("Please enter the name of a file containing board hints");
             Scanner scanner;
             while (true) {
-                // Get user input
-                try {
-                    scanner = new Scanner(System.in);
-                    boardNumber = scanner.nextInt();
-                }
-                catch (InputMismatchException e) {
-                    // User did not enter a number
-                    System.out.println("");
-                    System.out.println("Please enter a number between 1 and 2, inclusive");
+                // Get filename from user
+                scanner = new Scanner(System.in);
+			    String filename = scanner.next();
 
-                    // Get input again
-                    continue;
-                }
+				// Is this a valid filename?
+				File file = new File(filename);
+				if (file.exists() == false) {
+				    System.out.println("ERROR: Invalid filename, please try again");
+					continue;
+				}
 
-                // Is the number out of range?
-                if (boardNumber < 1 || boardNumber > 2) {
-                    // Board size out of range
-                    System.out.println("");
-                    System.out.println("Board size must be between 1 and 2, inclusive");
-                } else {
-                    // Got a valid board number
-                    break;
-                }
+				// Got a valid filename
+				// Initialize the board (and validate the file format)
+				try {
+                    board = initializeBoard(file);
+				    break;
+				}
+				catch (IllegalFileFormatException e) {
+				    System.out.println("ERROR: " + e.getMessage() + ", please try again");
+				}
             }
 
-            // Initialize the board
-            Board board = initializeBoard(boardNumber);
+			// Get player type (human or computer)
+			boolean isHumanPlayer = true;
+			while (true) {
+			    // Print out the choices
+			    System.out.println("");
+			    System.out.println("Will this be a human or computer player?");
+			    System.out.println("Enter H for human or C for computer");
+
+				// Get the choice and then validate it
+			    String humanOrComputer = scanner.next();
+				if (humanOrComputer == null || (humanOrComputer.toLowerCase().trim().equals("h") == false && humanOrComputer.toLowerCase().trim().equals("c") == false)) {
+                    // Invalid input
+					System.out.println("Incorrect choice, please enter either H or C");
+
+				    // Ask again
+				    continue;
+				}
+
+				// Valid input
+				if (humanOrComputer.toLowerCase().trim().equals("c") == true) {
+				    isHumanPlayer = false;
+				}
+
+				// Move on
+				break;
+			}
 
             // Main input loop
             scanner = new Scanner(System.in);
-            while (true) {
-                // Display the board
+            while (isHumanPlayer == true) {
+                // Display some basic instructions
                 System.out.println("");
+                System.out.println("-----------------------------------------------");
+                System.out.println("Enter your move in row column value format");
+                System.out.println("For example, enter 3 4 2 to place a 2 at (3, 4)");
+                System.out.println("Place a zero to clear a position");
+                System.out.println("Enter quit or exit to stop playing");
+                System.out.println("-----------------------------------------------");
+                System.out.println("");
+
+                // Display the board
                 System.out.println(board);
                 System.out.println("");
 
@@ -103,7 +128,7 @@ class Numbrix {
 
             // Display the move list
             System.out.println("");
-            System.out.println("Here is your move list:");
+            System.out.println("Here is the move list:");
             System.out.println("");
             board.displayMoveList();
 
@@ -168,65 +193,58 @@ class Numbrix {
     }
 
     // Initialize board
-    private static Board initializeBoard(int boardNumber) throws BoardException {
+    private static Board initializeBoard(File file) throws IllegalFileFormatException, BoardException {
+	    // Get a Scanner for the file
+		Scanner scanner = null;
+		try {
+		    scanner = new Scanner(file);
+	    }
+		catch (FileNotFoundException e) {
+		    // This can't happen because we already checked for the existence of the file
+		}
+
+	    // Read board size from file
+		int boardSize;
+		try {
+		    boardSize = scanner.nextInt();
+		}
+		catch (NoSuchElementException e) {
+			throw new IllegalFileFormatException("File format is incorrect: could not get board size");
+		}
+
         // Initialize board along with its size
-        Board board;
-        if (boardNumber == 1) {
-            board = new Board(3);
-        } else if (boardNumber == 2) {
-            board = new Board(8);
-        } else {
-            throw new BoardException("Invalid board number");
-        }
+        Board board = new Board(boardSize);
+
+		// Determine how many hints there are
+		int numberOfHints;
+		try {
+		    numberOfHints = scanner.nextInt();
+	    }
+		catch (NoSuchElementException e) {
+			throw new IllegalFileFormatException("File format is incorrect: could not get number of hints");
+		}
 
         // Add hints
-        if (boardNumber == 1) {
-            board.addHint(3, 1, 1);
-            board.addHint(3, 3, 3);
-            board.addHint(1, 1, 7);
-            board.addHint(1, 3, 9);
+		for (int i = 0; i < numberOfHints; i++) {
+		    try {
+			    // Get the hint details
+				int column = scanner.nextInt(); // "x"
+				int row = scanner.nextInt();    // "y"
+			    int value = scanner.nextInt();  // "num"
 
-            /*
-            board.addHint(3, 2, 2);
-            board.addHint(2, 1, 6);
-            board.addHint(2, 3, 4);
-            board.addHint(1, 2, 8);
-
-            board.addHint(3, 2, 2);
-            board.addHint(1, 2, 4);
-            board.addHint(2, 1, 5);
-            board.addHint(2, 3, 6);
-            */
-        } else {
-            board.addHint(8, 1, 45);
-            board.addHint(8, 2, 44);
-            board.addHint(8, 3, 39);
-            board.addHint(8, 4, 38);
-            board.addHint(8, 5, 23);
-            board.addHint(8, 6, 22);
-            board.addHint(8, 7, 19);
-            board.addHint(8, 8, 18);
-            board.addHint(1, 1, 58);
-            board.addHint(1, 2, 57);
-            board.addHint(1, 3, 56);
-            board.addHint(1, 4, 55);
-            board.addHint(1, 5, 8);
-            board.addHint(1, 6, 7);
-            board.addHint(1, 7, 6);
-            board.addHint(1, 8, 5);
-            board.addHint(7, 1, 46);
-            board.addHint(6, 1, 47);
-            board.addHint(5, 1, 48);
-            board.addHint(4, 1, 63);
-            board.addHint(3, 1, 64);
-            board.addHint(2, 1, 59);
-            board.addHint(7, 8, 17);
-            board.addHint(6, 8, 16);
-            board.addHint(5, 8, 15);
-            board.addHint(4, 8, 14);
-            board.addHint(3, 8, 3);
-            board.addHint(2, 8, 4);
-       }
+				// Add the hint
+				board.addHint(row, column, value);
+		    }
+			catch (NoSuchElementException e) {
+			    throw new IllegalFileFormatException("File format is incorrect: error processing hint #" + (i + 1));
+			}
+			catch (IllegalPositionException e) {
+			    throw new IllegalFileFormatException("File format is incorrect: error processing hint #" + (i + 1) + ": " + e.getMessage());
+			}
+			catch (IllegalValueException e) {
+			    throw new IllegalFileFormatException("File format is incorrect: error processing hint #" + (i + 1) + ": " + e.getMessage());
+			}
+		}
 
        // Return the board
        return board;
