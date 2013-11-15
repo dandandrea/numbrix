@@ -67,58 +67,12 @@ class Numbrix {
 				break;
 			}
 
-            // Main input loop
-            scanner = new Scanner(System.in);
-            while (isHumanPlayer == true) {
-                // Display some basic instructions
-                System.out.println("");
-                System.out.println("-----------------------------------------------");
-                System.out.println("Enter your move in row column value format");
-                System.out.println("For example, enter 3 4 2 to place a 2 at (3, 4)");
-                System.out.println("Place a zero to clear a position");
-                System.out.println("Enter quit or exit to stop playing");
-                System.out.println("-----------------------------------------------");
-                System.out.println("");
-
-                // Display the board
-                System.out.println(board);
-                System.out.println("");
-
-                // Get user input
-                String input = scanner.nextLine();
-
-                // Quit?
-                if (input.toLowerCase().equals("quit") || input.toLowerCase().equals("exit")) {
-                    break;
-                }
-
-                // Parse the input into a move
-                Move move;
-                try {
-                    move = parseInput(input);
-                }
-                catch (IllegalInputFormatException e) {
-                    System.out.println("");
-                    System.out.println(e.getMessage());
-                    continue;
-                }
-
-                // Make the move
-                try {
-                    board.setValue(move.getRow(), move.getColumn(), move.getValue());
-                }
-                catch (BoardException e) {
-                    System.out.println("");
-                    System.out.println(e.getMessage());
-                }
-
-                // Has the game been won?
-                if (board.isWon() == true) {
-                    System.out.println("");
-                    System.out.println("You won!");
-                    break;
-                }
-            }
+            // Play the game
+            if (isHumanPlayer == true) {
+			    humanPlay(board);
+            } else {
+			    computerPlay(board);
+			}
 
             // Display the board
             System.out.println("");
@@ -157,9 +111,71 @@ class Numbrix {
         }
 
         System.out.println("");
-        System.out.println("Later!");
+        System.out.println("See ya!");
         System.out.println("");
     }
+
+	// Computer play
+	private static void computerPlay(Board board) {
+        System.out.println("");
+	    System.out.println("Stub for computer play");
+        System.out.println("");
+	}
+
+	// Human play
+	private static void humanPlay(Board board) {
+        // Display some basic instructions
+        System.out.println("");
+        System.out.println("-----------------------------------------------");
+        System.out.println("Enter your move in row column value format");
+        System.out.println("For example, enter 3 4 2 to place a 2 at (3, 4)");
+        System.out.println("Place a zero to clear a position");
+        System.out.println("Enter quit or exit to stop playing");
+        System.out.println("-----------------------------------------------");
+
+		while (true) {
+			// Display the board
+            System.out.println("");
+			System.out.println(board);
+			System.out.println("");
+
+			// Get user input
+			Scanner scanner = new Scanner(System.in);
+			String input = scanner.nextLine();
+
+			// Quit?
+			if (input.toLowerCase().equals("quit") || input.toLowerCase().equals("exit")) {
+				break;
+			}
+
+			// Parse the input into a move
+			Move move;
+			try {
+				move = parseInput(input);
+			}
+			catch (IllegalInputFormatException e) {
+				System.out.println("");
+				System.out.println(e.getMessage());
+				continue;
+			}
+
+			// Make the move
+			try {
+				board.setValue(move.getRow(), move.getColumn(), move.getValue());
+			}
+			catch (BoardException e) {
+				System.out.println("");
+				System.out.println(e.getMessage());
+			}
+
+			// Has the game been won?
+			if (board.isWon() == true) {
+				System.out.println("");
+				System.out.println("You won!");
+				break;
+			}
+		}
+	}
 
     // Parse input
     private static Move parseInput(String input) throws IllegalInputFormatException {
@@ -228,9 +244,9 @@ class Numbrix {
 		for (int i = 0; i < numberOfHints; i++) {
 		    try {
 			    // Get the hint details
-				int column = scanner.nextInt(); // "x"
-				int row = scanner.nextInt();    // "y"
-			    int value = scanner.nextInt();  // "num"
+				int row = scanner.nextInt();
+				int column = scanner.nextInt();
+			    int value = scanner.nextInt();
 
 				// Add the hint
 				board.addHint(row, column, value);
