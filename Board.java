@@ -132,6 +132,11 @@ class Board {
         return rowList.get(row - 1).get(column - 1);
     }
 
+	// Get a board value, bypass coordinate validation and hint checking
+	public int getValueUnsafe(int row, int column) {
+        return rowList.get(row - 1).get(column - 1);
+	}
+
     // Override toString() in order to display the board
     public String toString() {
         // Get a StringBuilder
@@ -191,6 +196,11 @@ class Board {
     public boolean isWon() {
         return isWon;
     }
+
+	// Get the board size
+	public int getSize() {
+	    return size;
+	}
 
     // Determine if the game is complete
     private boolean isGameComplete() {
@@ -297,23 +307,5 @@ class Board {
 
         // Return the location (null if not found)
         return location;
-    }
-
-    private class Location {
-        private int row;
-        private int column;
-
-        public Location(int row, int column) {
-            this.row = row;
-            this.column = column;
-        }
-
-        public int getRow() {
-            return row;
-        }
-
-        public int getColumn() {
-            return column;
-        }
     }
 }

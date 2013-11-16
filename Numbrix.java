@@ -71,7 +71,12 @@ class Numbrix {
             if (isHumanPlayer == true) {
 			    humanPlay(board);
             } else {
-			    computerPlay(board);
+			    try {
+			        computerPlay(board);
+				}
+				catch (BoardException e) {
+				    System.out.println("Error during computer play: " + e.getMessage());
+				}
 			}
 
             // Display the board
@@ -116,10 +121,9 @@ class Numbrix {
     }
 
 	// Computer play
-	private static void computerPlay(Board board) {
-        System.out.println("");
-	    System.out.println("Stub for computer play");
-        System.out.println("");
+	private static void computerPlay(Board board) throws BoardException {
+	    // Instantiate the computer player
+		ComputerPlayer computerPlayer = new ComputerPlayer(board);
 	}
 
 	// Human play
