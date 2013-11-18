@@ -1,9 +1,7 @@
 package numbrix;
 
-import java.util.List;
-import java.util.ArrayList;
-import java.lang.Integer;
-import java.lang.StringBuilder;
+import java.util.*;
+import java.lang.*;
 import numbrix.exception.*;
 
 public class Board {
@@ -194,6 +192,50 @@ public class Board {
         // Increment the placed tile count
         placedCount++;
     }
+
+	// Find the location of a number
+	public Location findValue(int value) {
+	    // Search the board for this value
+		for (int row = 1; row <= size; row++) {
+		    for (int column = 1; column <= size; column++) {
+                // Is this our value?
+				if (getValueUnsafe(row, column) == value) {
+				    return new Location(row, column);
+				}
+			}
+		}
+
+        // Didn't find the value
+	    return null;
+	}
+
+	// Get the next value not in play
+	public int getNextValue() {
+	    // Concatenate move list and hint list
+        List<Move> valueList = new ArrayList<Move>();
+		valueList.addAll(moveList);
+		valueList.addAll(hintList);
+
+		// Sort list
+		Collections.sort(valueList);
+
+		// Find lowest value whose next value is missing from the list
+		int lowestValue = -1;
+		for (int i = 0; i < valueList.size(); i++) {
+		    // This is the next lowest value
+			lowestValue = valueList.get(i).getValue();
+
+			// Is the next value in the list equal to our lowest value + 1?
+			// If not then stop because we've found our next value
+			if (i < valueList.size() - 1 && valueList.get(i + 1).getValue() != lowestValue + 1) {
+			    // We have our value
+				break;
+			}
+		}
+
+        // Return next value
+		return lowestValue + 1;
+	}
 
     // Get the won status
     public boolean isWon() {

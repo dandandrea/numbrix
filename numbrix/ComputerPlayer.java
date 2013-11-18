@@ -9,6 +9,12 @@ class ComputerPlayer {
     // The board
 	private Board board;
 
+	// The non-forced move stack
+	Deque<Move> nonForcedMoveStack = new ArrayDeque<Move>();
+
+	// The forced move stack
+	Deque<Move> forcedMoveStack = new ArrayDeque<Move>();
+
     // Constructor
 	public ComputerPlayer(Board board) throws BoardException {
 	    // Set board
@@ -50,17 +56,27 @@ class ComputerPlayer {
 			}
 
 			// Make a non-forced move
-			playNonforcedMove(board);
+			boolean foundNonforcedMove = playNonforcedMove(board);
 
-			// Break here for now
-			break;
+			// Break if no forced moves and no non-forced moves made
+			if (foundForcedMove == false && foundNonforcedMove == false) {
+				System.out.println("");
+			    System.out.println("No more moves");
+				System.out.println("");
+			    break;
+			}
 		}
 	}
 
 	// Play non-forced moved
-	private void playNonforcedMove(Board board) {
-	    // Do nothing for now
-		System.out.println("STUB: Playing a non-forced move");
+	private boolean playNonforcedMove(Board board) {
+	    int nextValue = board.getNextValue();
+	    System.out.println("Next value to place: " + nextValue);
+		Location locationOfPreviousValue = board.findValue(nextValue - 1);
+	    System.out.println("Previous value is at row " + locationOfPreviousValue.getRow() + ", column " + locationOfPreviousValue.getColumn());
+
+		// Return true for now
+		return false;
 	}
 
 	// Play forced moves

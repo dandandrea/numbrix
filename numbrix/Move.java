@@ -1,6 +1,6 @@
 package numbrix;
 
-public class Move {
+public class Move implements Comparable<Move> {
     // Row, column, value
     private int row, column, value;
 
@@ -21,4 +21,15 @@ public class Move {
     public int getValue() {
         return value;
     }
+
+	// For Comparable interface
+	public int compareTo(Move otherMove) {
+	    if (otherMove.getValue() == value) {
+		    return 0;
+		} else if (otherMove.getValue() > value) {
+		    return -1;
+		} else {
+		    return 1;
+		}
+	}
 }
