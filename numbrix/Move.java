@@ -1,3 +1,5 @@
+package numbrix;
+
 public class Move {
     // Row, column, value
     private int row, column, value;

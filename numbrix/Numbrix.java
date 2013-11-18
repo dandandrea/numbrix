@@ -1,5 +1,8 @@
+package numbrix;
+
 import java.io.*;
 import java.util.*;
+import numbrix.exception.*;
 
 class Numbrix {
     public static void main(String[] args) throws NumbrixException {
@@ -9,23 +12,42 @@ class Numbrix {
         System.out.println("-------------------");
 		System.out.println("");
 
+		// Was the board filename provided as a command-line argument?
+		String filenameArgument = null;
+		if (args != null && args.length == 1) {
+		    filenameArgument = args[0];
+		}
+
 		// The board
 		Board board = null;
 
         // Play another game loop
         while (true) {
-            // Get board size
+            // Get board filename
             System.out.println("Please enter the name of a file containing board hints");
-            Scanner scanner;
+            Scanner scanner = new Scanner(System.in);
             while (true) {
-                // Get filename from user
-                scanner = new Scanner(System.in);
-			    String filename = scanner.next();
+			    // Use filename provided as command-line argument, if present
+				String filename = null;
+				if (filenameArgument != null) {
+				    // Filename was provided as command-line argument
+				    System.out.println(">>> Filename was provided as command-line argument");
+				    filename = filenameArgument;
+				} else {
+                    // Get filename from user
+                    scanner = new Scanner(System.in);
+			        filename = scanner.next();
+				}
 
 				// Is this a valid filename?
 				File file = new File(filename);
 				if (file.exists() == false) {
 				    System.out.println("ERROR: Invalid filename, please try again");
+
+					// Nullify filename command-line argument
+					filenameArgument = null;
+
+					// Try again
 					continue;
 				}
 

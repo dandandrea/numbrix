@@ -1,3 +1,5 @@
+package numbrix.exception;
+
 import java.lang.Exception;
 
 public class NumbrixException extends Exception {

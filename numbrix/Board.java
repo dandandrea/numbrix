@@ -1,26 +1,29 @@
+package numbrix;
+
 import java.util.List;
 import java.util.ArrayList;
 import java.lang.Integer;
 import java.lang.StringBuilder;
+import numbrix.exception.*;
 
-class Board {
+public class Board {
     // Board size
-    int size;
+    private int size;
  
     // Row list
-    List<List<Integer>> rowList;
+    private List<List<Integer>> rowList;
 
     // Move list
-    List<Move> moveList;
+    private List<Move> moveList;
 
     // Hint list
-    List<Move> hintList;
+    private List<Move> hintList;
 
     // Placed number count
-    int placedCount;
+    private int placedCount;
 
     // Whether or not the game has been won
-    boolean isWon;
+    private boolean isWon;
 
     // Constructor
     public Board(int size) {

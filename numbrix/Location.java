@@ -1,3 +1,5 @@
+package numbrix;
+
 public class Location {
     private int row;
     private int column;

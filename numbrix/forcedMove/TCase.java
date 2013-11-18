@@ -1,54 +1,49 @@
+package numbrix.forcedMove;
+
 import java.io.*;
 import java.util.*;
+import numbrix.*;
+import numbrix.exception.*;
 
-class ComputerPlayer {
-    // The board
-	private Board board;
-
-    // Constructor
-	public ComputerPlayer(Board board) throws BoardException {
-	    // Set board
-	    this.board = board;
-
-        // Play the game
-		play();
-	}
-
+public class TCase {
 	// Play the game
-	private void play() throws BoardException {
+	public static boolean play(Board board) throws BoardException {
+	    // Track whether or not we ever found a T-case
+		boolean everFoundTCase = false;
+
 	    // Display the board
 	    System.out.println("");
 	    System.out.println(board.toString());
 	    System.out.println("");
 
-        // Play forced moves
+        // Keep playing T-cases as long as we can find them
+		// Playing a T-case often creates a new T-case opporuntity
 		while (true) {
-		    // Play forced moves
-			System.out.println("Playing forced moves");
+		    // Play T-cases
+			System.out.println("Playing forced moves: T-cases");
 	        System.out.println("");
-		    boolean foundForcedMove = playForcedMoves();
+		    boolean foundTCase = playTCases(board);
 
-            // Stop if we didn't find any forced moves to play
-			if (foundForcedMove == false) {
-			    System.out.println("Didn't find any forced moves");
+			// Did we find a T-case?
+			if (foundTCase == true) {
+			    everFoundTCase = true;
+			}
+
+            // Stop if we didn't find any T-cases to play
+			if (foundTCase == false) {
+			    System.out.println("Didn't find any T-cases");
 			    break;
 			}
 		}
+
+		// Return whether or not we ever found a T-case
+		return everFoundTCase;
 	}
 
-	// Play forced moves
-	private boolean playForcedMoves() throws BoardException {
-		// Play T-cases
-		boolean foundForcedMove = playForcedMovesTCases();
-
-		// Return
-	    return foundForcedMove;
-	}
-
-	// Find forced moves: T-cases
-	private boolean playForcedMovesTCases() throws BoardException {
-	    // Whether or not there was a move
-		boolean foundForcedMove = false;
+	// Play T-cases
+	private static boolean playTCases(Board board) throws BoardException {
+	    // Whether or not there was a T-case
+		boolean foundTCase = false;
 
 		// Iterate every position in the board and look for T-cases
 		for (int row = 1; row <= board.getSize(); row++) {
@@ -120,8 +115,8 @@ class ComputerPlayer {
 					    board.setValue(row - 1, column, board.getValueUnsafe(row, column) + 1);
 					}
 
-					// We found a forced move
-					foundForcedMove = true;
+					// We found a T-case
+					foundTCase = true;
 				} else if (borderedLeft && borderedRight && borderedBottom) {
 				    // Which number to place?
 					if (borderingValueList.contains(board.getValueUnsafe(row, column) - 1) == false) {
@@ -130,8 +125,8 @@ class ComputerPlayer {
 					    board.setValue(row + 1, column, board.getValueUnsafe(row, column) + 1);
 					}
 
-					// We found a forced move
-					foundForcedMove = true;
+					// We found a T-case
+					foundTCase = true;
 				} else if (borderedLeft && borderedTop && borderedBottom) {
 				    // Which number to place?
 					if (borderingValueList.contains(board.getValueUnsafe(row, column) - 1) == false) {
@@ -140,8 +135,8 @@ class ComputerPlayer {
 					    board.setValue(row, column + 1, board.getValueUnsafe(row, column) + 1);
 					}
 
-					// We found a forced move
-					foundForcedMove = true;
+					// We found a T-case
+					foundTCase = true;
 				} else if (borderedRight && borderedTop && borderedBottom) {
 				    // Which number to place?
 					if (borderingValueList.contains(board.getValueUnsafe(row, column) - 1) == false) {
@@ -150,8 +145,8 @@ class ComputerPlayer {
 					    board.setValue(row, column - 1, board.getValueUnsafe(row, column) + 1);
 					}
 
-					// We found a forced move
-					foundForcedMove = true;
+					// We found a T-case
+					foundTCase = true;
 
 					// Display the game board
 					System.out.println(board.toString());
@@ -160,7 +155,7 @@ class ComputerPlayer {
 		    }
 		}
 
-		// Return
-		return foundForcedMove;
+		// Returm whether or not we found a T-case
+		return foundTCase;
 	}
 }
