@@ -94,7 +94,18 @@ class Numbrix {
 			    humanPlay(board);
             } else {
 			    try {
+				    // Record start time
+                    long startTime = System.nanoTime();
+
+                    // Play the board
 			        computerPlay(board);
+
+                    // Record end time
+                    long endTime = System.nanoTime();
+
+                    // Display time taken to solve board
+					System.out.println("");
+                    System.out.println(">>> Computer play took " + ((endTime - startTime) / 1000 / 1000) + " milliseconds");
 				}
 				catch (BoardException e) {
 				    System.out.println("Error during computer play: " + e.getMessage());

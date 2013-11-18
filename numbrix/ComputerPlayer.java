@@ -25,27 +25,36 @@ class ComputerPlayer {
 	    System.out.println(board.toString());
 	    System.out.println("");
 
-        // Play forced moves
+		// Play the game
 		while (true) {
-		    // Play forced moves
-			System.out.println("Playing forced moves");
-	        System.out.println("");
-		    boolean foundForcedMove = playForcedMoves();
+			// Play forced moves
+			while (true) {
+				// Play forced moves
+				System.out.println("Playing forced moves");
+				System.out.println("");
+				boolean foundForcedMove = playForcedMoves();
 
-            // Stop if we didn't find any forced moves to play
-			if (foundForcedMove == false) {
-			    System.out.println("Didn't find any forced moves");
-			    break;
+				// Stop if we didn't find any forced moves to play
+				if (foundForcedMove == false) {
+					System.out.println("Didn't find any forced moves");
+					break;
+				}
 			}
+
+			// Break here for now
+			break;
 		}
 	}
 
 	// Play forced moves
 	private boolean playForcedMoves() throws BoardException {
-		// Play T-cases
-		boolean foundForcedMove = TCase.play(board);
+	    // Play bookend cases
+		boolean foundBookendCase = BookendCase.play(board);
 
-		// Return
-	    return foundForcedMove;
+		// Play T-cases
+		boolean foundTCase = TCase.play(board);
+
+		// Return whether or not we found any forced moves
+	    return foundBookendCase || foundTCase;
 	}
 }
