@@ -27,4 +27,8 @@ public class Location {
 	public int getValue() {
 	    return value;
 	}
+
+    public String toString() {
+        return "row " + row + ", column " + column + ", value " + value;
+    }
 }

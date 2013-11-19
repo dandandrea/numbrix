@@ -4,11 +4,23 @@ public class Move implements Comparable<Move> {
     // Row, column, value
     private int row, column, value;
 
+	// Is forced
+	private boolean isForced;
+
     // Constructor
     public Move(int row, int column, int value) {
         this.row = row;
         this.column = column;
         this.value = value;
+		this.isForced = false;
+    }
+
+    // Constructor
+    public Move(int row, int column, int value, boolean isForced) {
+        this.row = row;
+        this.column = column;
+        this.value = value;
+		this.isForced = isForced;
     }
 
     // Getters
@@ -21,6 +33,9 @@ public class Move implements Comparable<Move> {
     public int getValue() {
         return value;
     }
+	public boolean getIsForced() {
+	    return isForced;
+	}
 
 	// For Comparable interface
 	public int compareTo(Move otherMove) {
@@ -31,5 +46,10 @@ public class Move implements Comparable<Move> {
 		} else {
 		    return 1;
 		}
+	}
+
+	// toString()
+	public String toString() {
+	    return "row " + row + ", column " + column + ", value " + value + ", isForced " + isForced;
 	}
 }

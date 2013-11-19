@@ -26,7 +26,7 @@ public class BookendCase {
 
             // Stop if we didn't find any bookend cases to play
 			if (foundBookendCase == false) {
-			    System.out.println("Didn't find any bookend cases");
+			    System.out.println("No more bookend cases");
 	            System.out.println("");
 			    break;
 			}
@@ -53,16 +53,16 @@ public class BookendCase {
 				// Is the number to the left equal to the number to the right - 2?
 				if (column != 1 && column != board.getSize() && board.getValueUnsafe(row, column - 1) != 0 && board.getValueUnsafe(row, column + 1) != 0 && board.getValueUnsafe(row, column - 1) == board.getValueUnsafe(row, column + 1) - 2) {
 					// Make the move
-					board.setValue(row, column, board.getValueUnsafe(row, column - 1) + 1);
+					board.setValue(row, column, board.getValueUnsafe(row, column - 1) + 1, true);
 				} else if (column != 1 && column != board.getSize() && board.getValueUnsafe(row, column - 1) != 0 && board.getValueUnsafe(row, column + 1) != 0 && board.getValueUnsafe(row, column - 1) == board.getValueUnsafe(row, column + 1) + 2) {
 					// Make the move
-					board.setValue(row, column, board.getValueUnsafe(row, column - 1) - 1);
+					board.setValue(row, column, board.getValueUnsafe(row, column - 1) - 1, true);
 				} else if (row != 1 && row != board.getSize() && board.getValueUnsafe(row - 1, column) != 0 && board.getValueUnsafe(row + 1, column) != 0 && board.getValueUnsafe(row + 1, column) == board.getValueUnsafe(row - 1, column) - 2) {
 					// Make the move
-					board.setValue(row, column, board.getValueUnsafe(row + 1, column) + 1);
+					board.setValue(row, column, board.getValueUnsafe(row + 1, column) + 1, true);
 				} else if (row != 1 && row != board.getSize() && board.getValueUnsafe(row - 1, column) != 0 && board.getValueUnsafe(row + 1, column) != 0 && board.getValueUnsafe(row + 1, column) == board.getValueUnsafe(row - 1, column) + 2) {
 					// Make the move
-					board.setValue(row, column, board.getValueUnsafe(row + 1, column) - 1);
+					board.setValue(row, column, board.getValueUnsafe(row + 1, column) - 1, true);
 				} else {
 				    // Didn't found a bookend case
 					continue;

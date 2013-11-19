@@ -26,7 +26,7 @@ public class TCase {
 
             // Stop if we didn't find any T-cases to play
 			if (foundTCase == false) {
-			    System.out.println("Didn't find any T-cases");
+			    System.out.println("No more T-cases");
 	            System.out.println("");
 			    break;
 			}
@@ -117,9 +117,17 @@ public class TCase {
 				if (borderedLeft && borderedRight && borderedAbove) {
 				    // Which number to place?
 					if (borderingValueList.contains(board.getValueUnsafe(row, column) - 1) == false) {
-					    board.setValue(row - 1, column, board.getValueUnsafe(row, column) - 1);
+					    if (board.findValue(board.getValueUnsafe(row, column) - 1) != null) {
+						    continue;
+						}
+
+					    board.setValue(row - 1, column, board.getValueUnsafe(row, column) - 1, true);
 					} else {
-					    board.setValue(row - 1, column, board.getValueUnsafe(row, column) + 1);
+					    if (board.findValue(board.getValueUnsafe(row, column) + 1) != null) {
+						    continue;
+						}
+
+					    board.setValue(row - 1, column, board.getValueUnsafe(row, column) + 1, true);
 					}
 
                     // Found a T-case
@@ -128,9 +136,17 @@ public class TCase {
 				} else if (borderedLeft && borderedRight && borderedBelow) {
 				    // Which number to place?
 					if (borderingValueList.contains(board.getValueUnsafe(row, column) - 1) == false) {
-					    board.setValue(row + 1, column, board.getValueUnsafe(row, column) - 1);
+					    if (board.findValue(board.getValueUnsafe(row, column) - 1) != null) {
+						    continue;
+						}
+
+					    board.setValue(row + 1, column, board.getValueUnsafe(row, column) - 1, true);
 					} else {
-					    board.setValue(row + 1, column, board.getValueUnsafe(row, column) + 1);
+					    if (board.findValue(board.getValueUnsafe(row, column) + 1) != null) {
+						    continue;
+						}
+
+					    board.setValue(row + 1, column, board.getValueUnsafe(row, column) + 1, true);
 					}
 
                     // Found a T-case
@@ -139,9 +155,17 @@ public class TCase {
 				} else if (borderedLeft && borderedAbove && borderedBelow) {
 				    // Which number to place?
 					if (borderingValueList.contains(board.getValueUnsafe(row, column) - 1) == false) {
-					    board.setValue(row, column + 1, board.getValueUnsafe(row, column) - 1);
+					    if (board.findValue(board.getValueUnsafe(row, column) - 1) != null) {
+						    continue;
+						}
+
+					    board.setValue(row, column + 1, board.getValueUnsafe(row, column) - 1, true);
 					} else {
-					    board.setValue(row, column + 1, board.getValueUnsafe(row, column) + 1);
+					    if (board.findValue(board.getValueUnsafe(row, column) + 1) != null) {
+						    continue;
+						}
+
+					    board.setValue(row, column + 1, board.getValueUnsafe(row, column) + 1, true);
 					}
 
                     // Found a T-case
@@ -150,9 +174,17 @@ public class TCase {
 				} else if (borderedRight && borderedAbove && borderedBelow) {
 				    // Which number to place?
 					if (borderingValueList.contains(board.getValueUnsafe(row, column) - 1) == false) {
-					    board.setValue(row, column - 1, board.getValueUnsafe(row, column) - 1);
+					    if (board.findValue(board.getValueUnsafe(row, column) - 1) != null) {
+						    continue;
+						}
+
+					    board.setValue(row, column - 1, board.getValueUnsafe(row, column) - 1, true);
 					} else {
-					    board.setValue(row, column - 1, board.getValueUnsafe(row, column) + 1);
+					    if (board.findValue(board.getValueUnsafe(row, column) + 1) != null) {
+						    continue;
+						}
+
+					    board.setValue(row, column - 1, board.getValueUnsafe(row, column) + 1, true);
 					}
 
                     // Found a T-case
