@@ -109,6 +109,9 @@ class Numbrix {
 				catch (BoardException e) {
 				    System.out.println("Error during computer play: " + e.getMessage());
 				}
+				catch (CannotUseHintException e) {
+				    System.out.println("Error during computer play: " + e.getMessage());
+				}
 			}
 
             // Display the board
@@ -153,7 +156,7 @@ class Numbrix {
     }
 
 	// Computer play
-	private static void computerPlay(Board board) throws BoardException {
+	private static void computerPlay(Board board) throws BoardException, CannotUseHintException {
 	    // Instantiate the computer player
 		ComputerPlayer computerPlayer = new ComputerPlayer(board);
 	}
@@ -200,6 +203,10 @@ class Numbrix {
 				board.setValue(move.getRow(), move.getColumn(), move.getValue());
 			}
 			catch (BoardException e) {
+				System.out.println("");
+				System.out.println(e.getMessage());
+			}
+			catch (CannotUseHintException e) {
 				System.out.println("");
 				System.out.println(e.getMessage());
 			}
@@ -285,7 +292,12 @@ class Numbrix {
 			    int value = scanner.nextInt();
 
 				// Add the hint
-				board.addHint(row, column, value);
+				try {
+				    board.addHint(row, column, value);
+				}
+				catch (CannotUseHintException e) {
+				    System.out.println("Unexpected state: Got CannotUseHintException: " + e.getMessage());
+				}
 		    }
 			catch (NoSuchElementException e) {
 			    throw new IllegalFileFormatException("File format is incorrect: error processing hint #" + (i + 1));

@@ -57,13 +57,13 @@ public class Board {
     }
 
 	// Allow setting a board value without the isForcedMove flag
-	public void setValue(int row, int column, int value) throws BoardException {
+	public void setValue(int row, int column, int value) throws BoardException, CannotUseHintException {
 	    // Call other method to set a board value
 		setValue(row, column, value, false);
 	}
 
     // Set a board value
-    public void setValue(int row, int column, int value, boolean isForcedMove) throws BoardException {
+    public void setValue(int row, int column, int value, boolean isForcedMove) throws BoardException, CannotUseHintException {
         // Validate board coordinates and value
         validateCoordinates(row, column);
         validateValue(value);
@@ -180,7 +180,7 @@ public class Board {
     }
 
     // Add a hint
-    public void addHint(int row, int column, int value) throws BoardException {
+    public void addHint(int row, int column, int value) throws BoardException, CannotUseHintException {
         // Cannot add a hint if a move has already been made
         if (moveList.size() > 0) {
             throw new BoardException("Hints cannot be added after a move has been made");
@@ -199,6 +199,21 @@ public class Board {
         // Increment the placed tile count
         placedCount++;
     }
+
+	// Determine whether or not a given value is a hint
+	public boolean getIsHint(int value) {
+	    // Search the hint list
+		for (int i = 0; i < hintList.size(); i++) {
+		    // Does this hint contain our value?
+			if (hintList.get(i).getValue() == value) {
+			    // Our value is a hint
+			    return true;
+			}
+		}
+
+		// Made it here then our value is not a hint
+		return false;
+	}
 
 	// Undo the last move
 	public void undo() {
@@ -226,6 +241,9 @@ public class Board {
 				catch (BoardException e) {
 				    System.out.println("Caught BoardException: " + e.getMessage());
 				}
+				catch (CannotUseHintException e) {
+				    System.out.println("ERROR: Unexpected state: Caught CannotUseHintException but should not ever get this exception (1)");
+				}
 			} else {
 			    // No more forced moves
 				break;
@@ -243,6 +261,9 @@ public class Board {
 			}
 			catch (BoardException e) {
 			    System.out.println("Caught BoardException: " + e.getMessage());
+			}
+			catch (CannotUseHintException e) {
+			    System.out.println("ERROR: Unexpected state: Caught CannotUseHintException but should not ever get this exception (2)");
 			}
 
 		    // Remove the move from the move list
@@ -264,6 +285,8 @@ public class Board {
 		// all 4 adjacent tiles are filled and n - 1 and n + 1 are not among the filled-in values
 
 		// Display board
+		System.out.println("Is the board in an invalid state?");
+		System.out.println("");
 		System.out.println(toString());
 		System.out.println("");
 
@@ -386,15 +409,18 @@ public class Board {
 			throw new BoardException("Trying to get next value when all values are already placed");
 		}
 
-	    // Concatenate move list and hint list
-        List<Move> moveAndHintList = new ArrayList<Move>();
-		moveAndHintList.addAll(moveList);
-		moveAndHintList.addAll(hintList);
-
-		// Reduce to list of values (instead of list of moves)
+		// List of values
 		List<Integer> valueList = new ArrayList<Integer>();
-		for (int i = 0; i < moveAndHintList.size(); i++) {
-		    valueList.add(moveAndHintList.get(i).getValue());
+		for (int row = 0; row < size; row++) {
+		    for (int column = 0; column < size; column++) {
+			    // Skip board positions that are not in play
+			    if (rowList.get(row).get(column) == 0) {
+				    continue;
+				}
+
+                // Add the value
+		        valueList.add(rowList.get(row).get(column));
+		    }
 		}
 
 		// Sort list
@@ -526,7 +552,7 @@ public class Board {
     }
 
     // Validate value
-    private void validateValue(int value) throws BoardException {
+    private void validateValue(int value) throws BoardException, CannotUseHintException {
         // Determine if value is in bounds
         if (value < 0 || value > size * size) {
             throw new IllegalValueException("Value must be between 0 and " + (size * size));
@@ -535,7 +561,7 @@ public class Board {
         // Determine if value is used by a hint
         for (int i = 0; i < hintList.size(); i++) {
             if (hintList.get(i).getValue() == value) {
-                throw new IllegalPositionException("You cannot place a number which is already used by a hint");
+                throw new CannotUseHintException("You cannot place a number which is already used by a hint");
             }
         }
     }

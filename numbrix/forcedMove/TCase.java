@@ -15,8 +15,6 @@ public class TCase {
 		// Playing a T-case often creates a new T-case opporuntity
 		while (true) {
 		    // Play T-cases
-			System.out.println("Playing forced moves: T-cases");
-	        System.out.println("");
 		    boolean foundTCase = playTCases(board);
 
 			// Did we find a T-case?
@@ -26,8 +24,6 @@ public class TCase {
 
             // Stop if we didn't find any T-cases to play
 			if (foundTCase == false) {
-			    System.out.println("No more T-cases");
-	            System.out.println("");
 			    break;
 			}
 		}
@@ -114,82 +110,87 @@ public class TCase {
 				}
 
                 // Did we find a T-case?
-				if (borderedLeft && borderedRight && borderedAbove) {
-				    // Which number to place?
-					if (borderingValueList.contains(board.getValueUnsafe(row, column) - 1) == false) {
-					    if (board.findValue(board.getValueUnsafe(row, column) - 1) != null) {
-						    continue;
+				try {
+					if (borderedLeft && borderedRight && borderedAbove) {
+						// Which number to place?
+						if (borderingValueList.contains(board.getValueUnsafe(row, column) - 1) == false) {
+							if (board.findValue(board.getValueUnsafe(row, column) - 1) != null) {
+								continue;
+							}
+
+							board.setValue(row - 1, column, board.getValueUnsafe(row, column) - 1, true);
+						} else {
+							if (board.findValue(board.getValueUnsafe(row, column) + 1) != null) {
+								continue;
+							}
+
+							board.setValue(row - 1, column, board.getValueUnsafe(row, column) + 1, true);
 						}
 
-					    board.setValue(row - 1, column, board.getValueUnsafe(row, column) - 1, true);
-					} else {
-					    if (board.findValue(board.getValueUnsafe(row, column) + 1) != null) {
-						    continue;
+						// Found a T-case
+						foundTCase = true;
+						everFoundTCase = true;
+					} else if (borderedLeft && borderedRight && borderedBelow) {
+						// Which number to place?
+						if (borderingValueList.contains(board.getValueUnsafe(row, column) - 1) == false) {
+							if (board.findValue(board.getValueUnsafe(row, column) - 1) != null) {
+								continue;
+							}
+
+							board.setValue(row + 1, column, board.getValueUnsafe(row, column) - 1, true);
+						} else {
+							if (board.findValue(board.getValueUnsafe(row, column) + 1) != null) {
+								continue;
+							}
+
+							board.setValue(row + 1, column, board.getValueUnsafe(row, column) + 1, true);
 						}
 
-					    board.setValue(row - 1, column, board.getValueUnsafe(row, column) + 1, true);
+						// Found a T-case
+						foundTCase = true;
+						everFoundTCase = true;
+					} else if (borderedLeft && borderedAbove && borderedBelow) {
+						// Which number to place?
+						if (borderingValueList.contains(board.getValueUnsafe(row, column) - 1) == false) {
+							if (board.findValue(board.getValueUnsafe(row, column) - 1) != null) {
+								continue;
+							}
+
+							board.setValue(row, column + 1, board.getValueUnsafe(row, column) - 1, true);
+						} else {
+							if (board.findValue(board.getValueUnsafe(row, column) + 1) != null) {
+								continue;
+							}
+
+							board.setValue(row, column + 1, board.getValueUnsafe(row, column) + 1, true);
+						}
+
+						// Found a T-case
+						foundTCase = true;
+						everFoundTCase = true;
+					} else if (borderedRight && borderedAbove && borderedBelow) {
+						// Which number to place?
+						if (borderingValueList.contains(board.getValueUnsafe(row, column) - 1) == false) {
+							if (board.findValue(board.getValueUnsafe(row, column) - 1) != null) {
+								continue;
+							}
+
+							board.setValue(row, column - 1, board.getValueUnsafe(row, column) - 1, true);
+						} else {
+							if (board.findValue(board.getValueUnsafe(row, column) + 1) != null) {
+								continue;
+							}
+
+							board.setValue(row, column - 1, board.getValueUnsafe(row, column) + 1, true);
+						}
+
+						// Found a T-case
+						foundTCase = true;
+						everFoundTCase = true;
 					}
-
-                    // Found a T-case
-				    foundTCase = true;
-					everFoundTCase = true;
-				} else if (borderedLeft && borderedRight && borderedBelow) {
-				    // Which number to place?
-					if (borderingValueList.contains(board.getValueUnsafe(row, column) - 1) == false) {
-					    if (board.findValue(board.getValueUnsafe(row, column) - 1) != null) {
-						    continue;
-						}
-
-					    board.setValue(row + 1, column, board.getValueUnsafe(row, column) - 1, true);
-					} else {
-					    if (board.findValue(board.getValueUnsafe(row, column) + 1) != null) {
-						    continue;
-						}
-
-					    board.setValue(row + 1, column, board.getValueUnsafe(row, column) + 1, true);
-					}
-
-                    // Found a T-case
-				    foundTCase = true;
-					everFoundTCase = true;
-				} else if (borderedLeft && borderedAbove && borderedBelow) {
-				    // Which number to place?
-					if (borderingValueList.contains(board.getValueUnsafe(row, column) - 1) == false) {
-					    if (board.findValue(board.getValueUnsafe(row, column) - 1) != null) {
-						    continue;
-						}
-
-					    board.setValue(row, column + 1, board.getValueUnsafe(row, column) - 1, true);
-					} else {
-					    if (board.findValue(board.getValueUnsafe(row, column) + 1) != null) {
-						    continue;
-						}
-
-					    board.setValue(row, column + 1, board.getValueUnsafe(row, column) + 1, true);
-					}
-
-                    // Found a T-case
-				    foundTCase = true;
-					everFoundTCase = true;
-				} else if (borderedRight && borderedAbove && borderedBelow) {
-				    // Which number to place?
-					if (borderingValueList.contains(board.getValueUnsafe(row, column) - 1) == false) {
-					    if (board.findValue(board.getValueUnsafe(row, column) - 1) != null) {
-						    continue;
-						}
-
-					    board.setValue(row, column - 1, board.getValueUnsafe(row, column) - 1, true);
-					} else {
-					    if (board.findValue(board.getValueUnsafe(row, column) + 1) != null) {
-						    continue;
-						}
-
-					    board.setValue(row, column - 1, board.getValueUnsafe(row, column) + 1, true);
-					}
-
-                    // Found a T-case
-				    foundTCase = true;
-					everFoundTCase = true;
+				}
+				catch (CannotUseHintException e) {
+                    System.out.println("Tried to place a forced move value which is used by a hint (this is okay)");
 				}
 
                 // Did we find a T-case?

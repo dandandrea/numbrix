@@ -15,8 +15,6 @@ public class BookendCase {
 		// Playing a bookend case often creates a new bookend case opporuntity
 		while (true) {
 		    // Play bookend cases
-			System.out.println("Playing forced moves: bookend cases");
-	        System.out.println("");
 		    boolean foundBookendCase = playBookendCases(board);
 
 			// Did we find a bookend case
@@ -26,8 +24,6 @@ public class BookendCase {
 
             // Stop if we didn't find any bookend cases to play
 			if (foundBookendCase == false) {
-			    System.out.println("No more bookend cases");
-	            System.out.println("");
 			    break;
 			}
 		}
@@ -51,21 +47,27 @@ public class BookendCase {
 				}
 
 				// Is the number to the left equal to the number to the right - 2?
-				if (column != 1 && column != board.getSize() && board.getValueUnsafe(row, column - 1) != 0 && board.getValueUnsafe(row, column + 1) != 0 && board.getValueUnsafe(row, column - 1) == board.getValueUnsafe(row, column + 1) - 2) {
-					// Make the move
-					board.setValue(row, column, board.getValueUnsafe(row, column - 1) + 1, true);
-				} else if (column != 1 && column != board.getSize() && board.getValueUnsafe(row, column - 1) != 0 && board.getValueUnsafe(row, column + 1) != 0 && board.getValueUnsafe(row, column - 1) == board.getValueUnsafe(row, column + 1) + 2) {
-					// Make the move
-					board.setValue(row, column, board.getValueUnsafe(row, column - 1) - 1, true);
-				} else if (row != 1 && row != board.getSize() && board.getValueUnsafe(row - 1, column) != 0 && board.getValueUnsafe(row + 1, column) != 0 && board.getValueUnsafe(row + 1, column) == board.getValueUnsafe(row - 1, column) - 2) {
-					// Make the move
-					board.setValue(row, column, board.getValueUnsafe(row + 1, column) + 1, true);
-				} else if (row != 1 && row != board.getSize() && board.getValueUnsafe(row - 1, column) != 0 && board.getValueUnsafe(row + 1, column) != 0 && board.getValueUnsafe(row + 1, column) == board.getValueUnsafe(row - 1, column) + 2) {
-					// Make the move
-					board.setValue(row, column, board.getValueUnsafe(row + 1, column) - 1, true);
-				} else {
-				    // Didn't found a bookend case
-					continue;
+				try {
+					if (column != 1 && column != board.getSize() && board.getValueUnsafe(row, column - 1) != 0 && board.getValueUnsafe(row, column + 1) != 0 && board.getValueUnsafe(row, column - 1) == board.getValueUnsafe(row, column + 1) - 2) {
+						// Make the move
+						board.setValue(row, column, board.getValueUnsafe(row, column - 1) + 1, true);
+					} else if (column != 1 && column != board.getSize() && board.getValueUnsafe(row, column - 1) != 0 && board.getValueUnsafe(row, column + 1) != 0 && board.getValueUnsafe(row, column - 1) == board.getValueUnsafe(row, column + 1) + 2) {
+						// Make the move
+						board.setValue(row, column, board.getValueUnsafe(row, column - 1) - 1, true);
+					} else if (row != 1 && row != board.getSize() && board.getValueUnsafe(row - 1, column) != 0 && board.getValueUnsafe(row + 1, column) != 0 && board.getValueUnsafe(row + 1, column) == board.getValueUnsafe(row - 1, column) - 2) {
+						// Make the move
+						board.setValue(row, column, board.getValueUnsafe(row + 1, column) + 1, true);
+					} else if (row != 1 && row != board.getSize() && board.getValueUnsafe(row - 1, column) != 0 && board.getValueUnsafe(row + 1, column) != 0 && board.getValueUnsafe(row + 1, column) == board.getValueUnsafe(row - 1, column) + 2) {
+						// Make the move
+						board.setValue(row, column, board.getValueUnsafe(row + 1, column) - 1, true);
+					} else {
+						// Didn't found a bookend case
+						continue;
+					}
+				}
+				catch (CannotUseHintException e) {
+				    System.out.println("Tried to place a forced move value which is used by a hint (this is okay)");
+				    continue;
 				}
 
 				// If we made it here then we found a bookend case
