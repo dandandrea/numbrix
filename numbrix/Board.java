@@ -279,6 +279,24 @@ public class Board {
 		System.out.println("");
 	}
 
+    // Get the distance between two values
+    private int getDistance(int valueOne, int valueTwo) throws BoardException {
+        // Get the locations of the two values
+        Location locationOne = findValue(valueOne);
+        Location locationTwo = findValue(valueTwo);
+
+        // Throw exception if either value not in play
+        if (locationOne == null) {
+            throw new BoardException("Value " + valueOne + " is not in play");
+        }
+        if (locationTwo == null) {
+            throw new BoardException("Value " + valueTwo + " is not in play");
+        }
+
+        // Return the distance
+        return Math.abs(locationOne.getRow() - locationTwo.getRow()) + Math.abs(locationOne.getColumn() - locationTwo.getColumn());
+    }
+
 	// Determine if the board is in an invalid state
 	public boolean getIsInInvalidState() {
 	    // Board is in an invalid state if for any placed value,
@@ -296,32 +314,60 @@ public class Board {
 		// If not, board is in an invalid state
 		for (int row = 1; row <= size; row++) {
 		    for (int column = 1; column <= size; column++) {
+			    // The value at this row and column
+				int value = getValueUnsafe(row, column);
+
 			    // Is there a value here?
-				if (getValueUnsafe(row, column) == 0) {
+				if (value == 0) {
 				    // No value here
 					continue;
 				}
 
+				// We'll need this list for the following checks
+				List<Integer> adjacentValueList = getAdjacentValueList(new Location(row, column));
+
+				// Is n - 1 in play? If so, is it adjacent?
+				Location nMinusOneLocation = findValue(value - 1);
+				if (value > 1 && nMinusOneLocation != null) {
+				    // This value must be adjacent to our value
+					if (adjacentValueList.contains(value - 1) == false) {
+					    // Invalid state
+				        System.out.println("Row " + row + ", column " + column + " is invalid (not adjacent to n - 1))");
+					    System.out.println("");
+					    return true;
+					}
+				}
+
+				// Is n + 1 in play? If so, is it adjacent?
+				Location nPlusOneLocation = findValue(value + 1);
+				if (value > 1 && nPlusOneLocation != null) {
+				    // This value must be adjacent to our value
+					if (adjacentValueList.contains(value + 1) == false) {
+					    // Invalid state
+				        System.out.println("Row " + row + ", column " + column + " is invalid (not adjacent to n + 1)");
+					    System.out.println("");
+					    return true;
+					}
+				}
+
 				// How many available locations?
+				// Don't perform the following check if the value isn't bordered on all 4 sides
 				List<Location> availableLocationList = getAvailableLocationList(new Location(row, column));
 				if (availableLocationList.size() > 0) {
 				    // There are available locations
 					continue;
 				}
 
-				// Are n - 1 and n + 1 present?
-				// System.out.println("Row " + row + ", column " + column + " might be invalid");
-				List<Integer> adjacentValueList = getAdjacentValueList(new Location(row, column));
+				// Values which are bordered on all 4 sides *must* be adjacent to n - 1 and n + 1
 				boolean nMinusOnePresent = false;
 				boolean nPlusOnePresent = false;
 				for (int i = 0; i < adjacentValueList.size(); i++) {
-				    // System.out.println("Row " + row + ", column " + column + " is bordered by value " + adjacentValueList.get(i));
 				    // Is this adjacent value equal to n - 1?
 				    // Is this adjacent value equal to n + 1?
-				    if (adjacentValueList.get(i) == getValueUnsafe(row, column) - 1) {
+				    if (adjacentValueList.get(i) == value - 1) {
 					    // Adjacent value is equal to n - 1
 						nMinusOnePresent = true;
-					} else if (adjacentValueList.get(i) == getValueUnsafe(row, column) + 1) {
+					} else if (adjacentValueList.get(i) == value + 1) {
 					    // Adjacent value is equal to n - 1
 						nPlusOnePresent = true;
 					}
@@ -329,10 +375,10 @@ public class Board {
 
 				// Is this the first number or the last number?
 				// if so then only one required adjacent value is needed
-				if (getValueUnsafe(row, column) == 1 || getValueUnsafe(row, column) == size * size) {
+				if (value == 1 || value == size * size) {
 				    if (nMinusOnePresent == false && nPlusOnePresent == false) {
 				        // Invalid state
-				        System.out.println("Row " + row + ", column " + column + " is invalid");
+				        System.out.println("Row " + row + ", column " + column + " is invalid (not bordered by n - 1/n + 1)");
 					    System.out.println("");
 				        return true;
 					} else {
@@ -344,7 +390,7 @@ public class Board {
 				// If n - 1 and n + 1 are not present then the board is in an invalid state
 				if (nMinusOnePresent == false || nPlusOnePresent == false) {
 				    // Invalid state
-				    System.out.println("Row " + row + ", column " + column + " is invalid");
+				    System.out.println("Row " + row + ", column " + column + " is invalid (not bordered by n - 1 and n + 1)");
 					System.out.println("");
 				    return true;
 				}
@@ -453,7 +499,7 @@ public class Board {
 	}
 
 	// Get list of values in tiles adjacent to a given location
-	private List<Integer> getAdjacentValueList(Location location) {
+	public List<Integer> getAdjacentValueList(Location location) {
 	    // The adjacent value list
 		List<Integer> adjacentValueList = new ArrayList<Integer>();
 

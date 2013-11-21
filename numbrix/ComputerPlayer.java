@@ -60,7 +60,7 @@ class ComputerPlayer {
 				// Push next non-forced moves
 				System.out.println("Pushing moves onto stack");
 				System.out.println("");
-				pushNextMoveList();
+				pushNextMoves();
 				System.out.println("");
 				dumpStack();
 			} else {
@@ -137,7 +137,7 @@ class ComputerPlayer {
 	}
 
 	// Push next available moves
-	private void pushNextMoveList() throws BoardException {
+	private void pushNextMoves() throws BoardException {
 	    // Get next value to place
 	    int nextValue = board.getNextValue();
 	    System.out.println("Next value to place: " + nextValue);
@@ -150,16 +150,84 @@ class ComputerPlayer {
 		// We know that it is the former case if n + 1 is in play
 		// And we know that it is the latter case if n - 1 is in play
 		Location locationOfPreviousValue = board.findValue(nextValue + 1);
+		int previousValue = nextValue + 1;
 		if (locationOfPreviousValue == null) {
 		    locationOfPreviousValue = board.findValue(nextValue - 1);
+		    previousValue = nextValue - 1;
 		}
 
+		// We'll add our moves to this list and then sort it by distance
+		// just before putting it on the next move stack
+		List<MoveWithDistance> nextMoveList = new ArrayList<MoveWithDistance>();
+
 		// Get available locations for placing the next value
-		// Add them to the non-forced moves stack
 		List<Location> availableLocationList = board.getAvailableLocationList(locationOfPreviousValue);
+
+		// List of available location list indices already used (for skipping them later)
+		List<Integer> availableLocationListIndexSkipList = new ArrayList<Integer>();
+
+        // The number which we are placing is n
+		// Are any of the available locations adjacent to n - 1 or n + 1?
 		for (int i = 0; i < availableLocationList.size(); i++) {
-			// Add to the pending moves stack
-			pendingMoveStack.push(new Move(availableLocationList.get(i).getRow(), availableLocationList.get(i).getColumn(), nextValue));
+		    // Get adjacent values
+            List<Integer> adjacentValueList = board.getAdjacentValueList(availableLocationList.get(i));
+
+			// Are any of the available locations adjacent to n - 1 or n + 1?
+			// Ignore the "previous value" as an n - 1 / n + 1 candidate since this will always be present
+			for (int j = 0; j < adjacentValueList.size(); j++) {
+			    // Is this our previous value? If so then skip it
+				if (adjacentValueList.get(j) == previousValue) {
+				    // Skip
+				    continue;
+				}
+
+				// Is this value equal to n - 1?
+				if (adjacentValueList.get(j) == nextValue - 1) {
+				    // This is a priority location (distance = 0)
+					System.out.println("Adding preferred location " + availableLocationList.get(i));
+					nextMoveList.add(new MoveWithDistance(availableLocationList.get(i).getRow(), availableLocationList.get(i).getColumn(), nextValue, 0));
+
+					// Add this available location list index to the skip list
+					availableLocationListIndexSkipList.add(i);
+
+					// Stop searching
+					break;
+				}
+
+				// Is this value equal to n + 1?
+				if (adjacentValueList.get(j) == nextValue + 1) {
+				    // This is a priority location (distance = 0)
+					System.out.println("Adding preferred location " + availableLocationList.get(i));
+					nextMoveList.add(new MoveWithDistance(availableLocationList.get(i).getRow(), availableLocationList.get(i).getColumn(), nextValue, 0));
+
+					// Add this available location list index to the skip list
+					availableLocationListIndexSkipList.add(i);
+
+					// Stop searching
+					break;
+				}
+			}
+		}
+
+		// Put the rest of the available locations in the (intermediary) next move list
+		for (int i = 0; i < availableLocationList.size(); i++) {
+		    // Skip items marked for skipping
+			if (availableLocationListIndexSkipList.contains(i) == true) {
+			    // Skip
+				continue;
+			}
+
+			// Add to the next move list (with distance = 1, for now)
+			System.out.println("Adding non-preferred location " + availableLocationList.get(i));
+			nextMoveList.add(new MoveWithDistance(availableLocationList.get(i).getRow(), availableLocationList.get(i).getColumn(), nextValue,10));
+		}
+
+		// Sort the (intermediary) next move list by distance
+		Collections.sort(nextMoveList);
+
+		// Add the next moves to the next move stack
+		for (int i = 0; i < nextMoveList.size(); i++) {
+			pendingMoveStack.push(new Move(nextMoveList.get(i).getRow(), nextMoveList.get(i).getColumn(), nextMoveList.get(i).getValue()));
 		}
 	}
 

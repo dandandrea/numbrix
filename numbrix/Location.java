@@ -8,6 +8,7 @@ public class Location {
     public Location(int row, int column) {
         this.row = row;
         this.column = column;
+		this.value = 0;
     }
 
     public Location(int row, int column, int value) {
@@ -29,6 +30,6 @@ public class Location {
 	}
 
     public String toString() {
-        return "row " + row + ", column " + column + ", value " + value;
+        return "row " + row + ", column " + column + (value != 0 ? ", value " + value : "");
     }
 }
