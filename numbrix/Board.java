@@ -23,6 +23,9 @@ public class Board {
     // Whether or not the game has been won
     private boolean isWon;
 
+	// To track the total number of moves made
+	private int moveCount;
+
     // Constructor
     public Board(int size) {
         // Set board size
@@ -42,6 +45,9 @@ public class Board {
 
         // Initialize game won status
         isWon = false;
+
+		// Initialize move count
+		moveCount = 0;
 
         // Instantiate column lists
         for (int row = 0; row < size; row++) {
@@ -64,6 +70,9 @@ public class Board {
 
     // Set a board value
     public void setValue(int row, int column, int value, boolean isForcedMove) throws BoardException, CannotUseHintException {
+	    // Increment the move count, regardless of outcome
+		moveCount++;
+
         // Validate board coordinates and value
         validateCoordinates(row, column);
         validateValue(value);
@@ -123,7 +132,6 @@ public class Board {
 
         // Is the board full now?
         // If so, has the game been won?
-		// System.out.println("placedCount: " + placedCount);
         if (placedCount == size * size && isGameComplete() == true) {
             isWon = true;
         } else {
@@ -231,7 +239,7 @@ public class Board {
 			// Is this a forced move?
 			if (lastMove.getIsForced() == true) {
 		        // Remove the move from the move list
-			    System.out.println("Removing forced move " + lastMove);
+			    if (Numbrix.DEBUG) System.out.println("Removing forced move " + lastMove);
 	            moveList.remove(moveList.size() - 1);
 
 		        // Remove the move from the board
@@ -267,16 +275,16 @@ public class Board {
 			}
 
 		    // Remove the move from the move list
-			System.out.println("Removing non-forced move " + lastMove);
-			System.out.println("");
+			if (Numbrix.DEBUG) System.out.println("Removing non-forced move " + lastMove);
+			if (Numbrix.DEBUG) System.out.println("");
 	        moveList.remove(moveList.size() - 1);
 		}
 
 		// Display board
-		System.out.println("Board after undo:");
-		System.out.println("");
-		System.out.println(toString());
-		System.out.println("");
+		if (Numbrix.DEBUG) System.out.println("Board after undo:");
+		if (Numbrix.DEBUG) System.out.println("");
+		if (Numbrix.DEBUG) System.out.println(toString());
+		if (Numbrix.DEBUG) System.out.println("");
 	}
 
     // Get the distance between two values
@@ -303,10 +311,10 @@ public class Board {
 		// all 4 adjacent tiles are filled and n - 1 and n + 1 are not among the filled-in values
 
 		// Display board
-		System.out.println("Is the board in an invalid state?");
-		System.out.println("");
-		System.out.println(toString());
-		System.out.println("");
+		if (Numbrix.DEBUG) System.out.println("Is the board in an invalid state?");
+		if (Numbrix.DEBUG) System.out.println("");
+		if (Numbrix.DEBUG) System.out.println(toString());
+		if (Numbrix.DEBUG) System.out.println("");
 
 		// Iterate all locations
 		// If there is a value at a given location, check to see if there are any available locations
@@ -332,8 +340,8 @@ public class Board {
 				    // This value must be adjacent to our value
 					if (adjacentValueList.contains(value - 1) == false) {
 					    // Invalid state
-				        System.out.println("Row " + row + ", column " + column + " is invalid (not adjacent to n - 1))");
-					    System.out.println("");
+				        if (Numbrix.DEBUG) System.out.println("Row " + row + ", column " + column + " is invalid (not adjacent to n - 1))");
+					    if (Numbrix.DEBUG) System.out.println("");
 					    return true;
 					}
 				}
@@ -344,8 +352,8 @@ public class Board {
 				    // This value must be adjacent to our value
 					if (adjacentValueList.contains(value + 1) == false) {
 					    // Invalid state
-				        System.out.println("Row " + row + ", column " + column + " is invalid (not adjacent to n + 1)");
-					    System.out.println("");
+				        if (Numbrix.DEBUG) System.out.println("Row " + row + ", column " + column + " is invalid (not adjacent to n + 1)");
+					    if (Numbrix.DEBUG) System.out.println("");
 					    return true;
 					}
 				}
@@ -378,8 +386,8 @@ public class Board {
 				if (value == 1 || value == size * size) {
 				    if (nMinusOnePresent == false && nPlusOnePresent == false) {
 				        // Invalid state
-				        System.out.println("Row " + row + ", column " + column + " is invalid (not bordered by n - 1/n + 1)");
-					    System.out.println("");
+				        if (Numbrix.DEBUG) System.out.println("Row " + row + ", column " + column + " is invalid (not bordered by n - 1/n + 1)");
+					    if (Numbrix.DEBUG) System.out.println("");
 				        return true;
 					} else {
 					    // Valid state
@@ -390,15 +398,15 @@ public class Board {
 				// If n - 1 and n + 1 are not present then the board is in an invalid state
 				if (nMinusOnePresent == false || nPlusOnePresent == false) {
 				    // Invalid state
-				    System.out.println("Row " + row + ", column " + column + " is invalid (not bordered by n - 1 and n + 1)");
-					System.out.println("");
+				    if (Numbrix.DEBUG) System.out.println("Row " + row + ", column " + column + " is invalid (not bordered by n - 1 and n + 1)");
+					if (Numbrix.DEBUG) System.out.println("");
 				    return true;
 				}
 			}
 		}
 
 		// If we made it here then the board is in a valid state
-	    System.out.println("");
+	    if (Numbrix.DEBUG) System.out.println("");
 		return false;
 	}
 
@@ -498,6 +506,11 @@ public class Board {
 	    return size;
 	}
 
+	// Get the move count
+	public int getMoveCount() {
+	    return moveCount;
+	}
+
 	// Get list of values in tiles adjacent to a given location
 	public List<Integer> getAdjacentValueList(Location location) {
 	    // The adjacent value list
@@ -534,8 +547,6 @@ public class Board {
 
         // Try to build a chain (snake) from 1 to the last number
         for (int n = 1; n < size * size; n++) {
-		    // System.out.println("[GameComplete] Checking " + n);
-
             // Get location of value
             Location location = getLocationOfValue(n);
 
@@ -559,7 +570,6 @@ public class Board {
             // Try to reach next number
             boolean reachable = false;
             for (int i = 0; i < adjacencyList.size(); i++) {
-		        // System.out.println("[GameComplete] Looking at " + adjacencyList.get(i));
                 if (rowList.get(adjacencyList.get(i).getRow() - 1).get(adjacencyList.get(i).getColumn() - 1) == n + 1) {
                     reachable = true;
                     break;

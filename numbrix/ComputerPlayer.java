@@ -20,7 +20,7 @@ class ComputerPlayer {
 		// Instantiate pending move stack
 		pendingMoveStack = new ArrayDeque<Move>();
 
-		System.out.println("");
+		if (Numbrix.DEBUG) System.out.println("");
 
         // Play the game
 		play();
@@ -30,13 +30,13 @@ class ComputerPlayer {
 	boolean skipToPlay = false;
 	private void play() throws BoardException, CannotUseHintException {
 	    // Display the board
-	    System.out.println(board.toString());
-	    System.out.println("");
+	    if (Numbrix.DEBUG) System.out.println(board.toString());
+	    if (Numbrix.DEBUG) System.out.println("");
 
 		// Play the game
 		while (true) {
-	       System.out.println(">>> At top of play loop");
-	       System.out.println("");
+	       if (Numbrix.DEBUG) System.out.println(">>> At top of play loop");
+	       if (Numbrix.DEBUG) System.out.println("");
 
 		    // Skip to play?
 		    if (skipToPlay == false) {
@@ -46,7 +46,7 @@ class ComputerPlayer {
 				// Did this put the board into an invalid state?
 				boolean isInInvalidState = recoverFromInvalidState();
 			    if (isInInvalidState == true) {
-			        System.out.println("");
+			        if (Numbrix.DEBUG) System.out.println("");
 			        skipToPlay = true;
 					continue;
 			    }
@@ -58,10 +58,10 @@ class ComputerPlayer {
 				}
 
 				// Push next non-forced moves
-				System.out.println("Pushing moves onto stack");
-				System.out.println("");
+				if (Numbrix.DEBUG) System.out.println("Pushing moves onto stack");
+				if (Numbrix.DEBUG) System.out.println("");
 				pushNextMoves();
-				System.out.println("");
+				if (Numbrix.DEBUG) System.out.println("");
 				dumpStack();
 			} else {
 			    // Reset skip to play flag
@@ -71,21 +71,21 @@ class ComputerPlayer {
 			// Is there a next move? If not then break
 			if (pendingMoveStack.size() == 0) {
 			    // No more moves
-			    System.out.println("");
-				System.out.println("No more moves");
-			    System.out.println("");
+			    if (Numbrix.DEBUG) System.out.println("");
+				if (Numbrix.DEBUG) System.out.println("No more moves");
+			    if (Numbrix.DEBUG) System.out.println("");
 			    break;
 			}
 
 			// Make a non-forced move
-	        System.out.println("Playing move from next move stack");
-			System.out.println("");
+	        if (Numbrix.DEBUG) System.out.println("Playing move from next move stack");
+			if (Numbrix.DEBUG) System.out.println("");
 			playNonforcedMove();
 
 		    // Did this put the board into an invalid state?
 			boolean isInInvalidState = recoverFromInvalidState();
 			if (isInInvalidState == true) {
-			    System.out.println("");
+			    if (Numbrix.DEBUG) System.out.println("");
 			    skipToPlay = true;
 			}
 
@@ -105,10 +105,10 @@ class ComputerPlayer {
         // Perform recovery if in invalid state
 	    if (isInInvalidState == true) {
 			// Undo last forced moves and last non-forced move
-	        System.out.println("Board is in an invalid state, undoing move(s)");
+	        if (Numbrix.DEBUG) System.out.println("Board is in an invalid state, undoing move(s)");
 
             // Dump stack
-			System.out.println("");
+			if (Numbrix.DEBUG) System.out.println("");
 			dumpStack();
 
             // Undo
@@ -124,7 +124,7 @@ class ComputerPlayer {
 				if (location != null) {
 					// This value is already in play
 					// Remove the item from the pending move stack
-					System.out.println("Next value to play is already in play, doing undo");
+					if (Numbrix.DEBUG) System.out.println("Next value to play is already in play, doing undo");
 					board.undo();
 				} else {
 				    break;
@@ -140,8 +140,8 @@ class ComputerPlayer {
 	private void pushNextMoves() throws BoardException {
 	    // Get next value to place
 	    int nextValue = board.getNextValue();
-	    System.out.println("Next value to place: " + nextValue);
-		System.out.println("");
+	    if (Numbrix.DEBUG) System.out.println("Next value to place: " + nextValue);
+		if (Numbrix.DEBUG) System.out.println("");
 
 		// Did we get the value one lower than the lowest value in play?
 		// Or did we get the value one higher than the lowest value in play?
@@ -184,7 +184,7 @@ class ComputerPlayer {
 				// Is this value equal to n - 1?
 				if (adjacentValueList.get(j) == nextValue - 1) {
 				    // This is a priority location (distance = 0)
-					System.out.println("Adding preferred location " + availableLocationList.get(i));
+					if (Numbrix.DEBUG) System.out.println("Adding preferred location " + availableLocationList.get(i));
 					nextMoveList.add(new MoveWithDistance(availableLocationList.get(i).getRow(), availableLocationList.get(i).getColumn(), nextValue, 0));
 
 					// Add this available location list index to the skip list
@@ -197,7 +197,7 @@ class ComputerPlayer {
 				// Is this value equal to n + 1?
 				if (adjacentValueList.get(j) == nextValue + 1) {
 				    // This is a priority location (distance = 0)
-					System.out.println("Adding preferred location " + availableLocationList.get(i));
+					if (Numbrix.DEBUG) System.out.println("Adding preferred location " + availableLocationList.get(i));
 					nextMoveList.add(new MoveWithDistance(availableLocationList.get(i).getRow(), availableLocationList.get(i).getColumn(), nextValue, 0));
 
 					// Add this available location list index to the skip list
@@ -218,7 +218,7 @@ class ComputerPlayer {
 			}
 
 			// Add to the next move list (with distance = 1, for now)
-			System.out.println("Adding non-preferred location " + availableLocationList.get(i));
+			if (Numbrix.DEBUG) System.out.println("Adding non-preferred location " + availableLocationList.get(i));
 			nextMoveList.add(new MoveWithDistance(availableLocationList.get(i).getRow(), availableLocationList.get(i).getColumn(), nextValue,10));
 		}
 
@@ -245,7 +245,7 @@ class ComputerPlayer {
 		// Is this value already in play? If so then undo and don't play
 		if (board.findValue(nextMove.getValue()) != null) {
 		    // This value is already in play, undo
-			System.out.println("Move " + nextMove + " is already in play, doing undo");
+			if (Numbrix.DEBUG) System.out.println("Move " + nextMove + " is already in play, doing undo");
 			board.undo();
 		}
 
@@ -255,8 +255,8 @@ class ComputerPlayer {
 		}
 
 		// Place the next move
-		System.out.println("Playing next move");
-		System.out.println("");
+		if (Numbrix.DEBUG) System.out.println("Playing next move");
+		if (Numbrix.DEBUG) System.out.println("");
 	    board.setValue(nextMove.getRow(), nextMove.getColumn(), nextMove.getValue());
 
 		// Made it here then there was another non-forced move
@@ -266,17 +266,17 @@ class ComputerPlayer {
     // Dump stack contents
 	private void dumpStack() {
 	    // Dump stack depth
-		System.out.println(">>> Pending move stack depth: " + pendingMoveStack.size());
-		System.out.println("");
+		if (Numbrix.DEBUG) System.out.println(">>> Pending move stack depth: " + pendingMoveStack.size());
+		if (Numbrix.DEBUG) System.out.println("");
 
         // Dump stack contents
 		Iterator<Move> iterator = pendingMoveStack.iterator();
 		while (iterator.hasNext() == true) {
 		    Move move = iterator.next();
-		    System.out.println(move.getRow() + " " + move.getColumn() + " " + move.getValue());
+		    if (Numbrix.DEBUG) System.out.println(move.getRow() + " " + move.getColumn() + " " + move.getValue());
 		}
 
-		System.out.println("");
+		if (Numbrix.DEBUG) System.out.println("");
     }
 
 	// Play forced moves
@@ -285,8 +285,8 @@ class ComputerPlayer {
 		// result in more forced moves
 		while (true) {
 			// Play forced moves
-			System.out.println("Playing forced moves");
-			System.out.println("");
+			if (Numbrix.DEBUG) System.out.println("Playing forced moves");
+			if (Numbrix.DEBUG) System.out.println("");
 
 	        // Play bookend cases
 		    boolean foundBookendCase = BookendCase.play(board);
@@ -296,8 +296,8 @@ class ComputerPlayer {
 
 			// Stop if we didn't find any forced moves to play
 			if (foundBookendCase == false || foundTCase == false) {
-				System.out.println("No more forced moves");
-			    System.out.println("");
+				if (Numbrix.DEBUG) System.out.println("No more forced moves");
+			    if (Numbrix.DEBUG) System.out.println("");
 				break;
 			}
 		}

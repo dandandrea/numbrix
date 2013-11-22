@@ -4,7 +4,11 @@ import java.io.*;
 import java.util.*;
 import numbrix.exception.*;
 
-class Numbrix {
+public class Numbrix {
+    // Whether or not we are in debug mode
+    public static boolean DEBUG = false;
+
+    // The main entry point for Numbrix
     public static void main(String[] args) throws NumbrixException {
 	    // Introductory message
         System.out.println("-------------------");
@@ -103,8 +107,13 @@ class Numbrix {
                     // Record end time
                     long endTime = System.nanoTime();
 
+					// Calculate the time in seconds and format it for display
+					float seconds = (float)(endTime - startTime) / (float)1000 / (float)1000 / (float)1000;
+
                     // Display time taken to solve board
-                    System.out.println(">>> Computer play took " + ((endTime - startTime) / 1000 / 1000) + " milliseconds");
+					System.out.println("");
+                    System.out.printf(">>> Computer play took %.2f seconds\n", seconds);
+                    System.out.printf(">>> Computer made %,d moves\n", board.getMoveCount());
 				}
 				catch (BoardException e) {
 				    System.out.println("Error during computer play: " + e.getMessage());

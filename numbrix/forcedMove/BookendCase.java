@@ -66,18 +66,18 @@ public class BookendCase {
 					}
 				}
 				catch (CannotUseHintException e) {
-				    System.out.println("Tried to place a forced move value which is used by a hint (this is okay)");
+				    if (Numbrix.DEBUG) System.out.println("Tried to place a forced move value which is used by a hint (this is okay)");
 				    continue;
 				}
 
 				// If we made it here then we found a bookend case
-				System.out.println("Found bookend case at row " + row + ", column " + column);
-				System.out.println("");
+				if (Numbrix.DEBUG) System.out.println("Found bookend case at row " + row + ", column " + column);
+				if (Numbrix.DEBUG) System.out.println("");
 				foundBookendCase = true;
 
 				// Display the game board
-				System.out.println(board.toString());
-				System.out.println("");
+				if (Numbrix.DEBUG) System.out.println(board.toString());
+				if (Numbrix.DEBUG) System.out.println("");
 		    }
 		}
 
