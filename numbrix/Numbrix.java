@@ -98,6 +98,12 @@ public class Numbrix {
 			    humanPlay(board);
             } else {
 			    try {
+                    // Display the board
+                    System.out.println("");
+                    System.out.println("Here is the initial board state:");
+                    System.out.println("");
+                    System.out.println(board);
+
 				    // Record start time
                     long startTime = System.nanoTime();
 
@@ -113,7 +119,7 @@ public class Numbrix {
                     // Display time taken to solve board
 					System.out.println("");
                     System.out.printf(">>> Computer play took %.2f seconds\n", seconds);
-                    System.out.printf(">>> Computer made %,d moves\n", board.getMoveCount());
+                    System.out.printf(">>> Computer attempted %,d moves\n", board.getMoveCount());
 				}
 				catch (BoardException e) {
 				    System.out.println("Error during computer play: " + e.getMessage());
