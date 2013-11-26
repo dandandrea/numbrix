@@ -194,6 +194,8 @@ public class Numbrix {
 			System.out.println("");
 
 			// Get user input
+			System.out.println("Enter your move:");
+			System.out.println("");
 			Scanner scanner = new Scanner(System.in);
 			String input = scanner.nextLine();
 
