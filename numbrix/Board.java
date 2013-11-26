@@ -158,8 +158,26 @@ public class Board {
         // Get a StringBuilder
         StringBuilder stringBuilder = new StringBuilder();
 
+		// Add the column header
+		stringBuilder.append("       ");
+		for (int column = 1; column <= size; column++) {
+            stringBuilder.append(String.format("%-3d ", column));
+		}
+        stringBuilder.append("\n");
+
+		// Display a line underneath the column header
+        stringBuilder.append("-----");
+		for (int column = 1; column <= size; column++) {
+            stringBuilder.append("----");
+		}
+        stringBuilder.append("\n");
+
         // Iterate the rows
         for (int row = size - 1; row >= 0; row--) {
+		    // Display the row number followed by a "|" separator at
+			// the beginning of each row
+			stringBuilder.append(String.format("%3d ", row + 1) + " | ");
+
             // Iterate the columns
             for (int column = 0; column < size; column++) {
                 // Display a "-" if the value is 0, otherwise display the value
