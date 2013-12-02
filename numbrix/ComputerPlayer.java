@@ -10,7 +10,7 @@ class ComputerPlayer {
 	private Board board;
 
 	// The pending move stack
-	Deque<Move> pendingMoveStack;
+	private Deque<Move> pendingMoveStack;
 
     // Constructor
 	public ComputerPlayer(Board board) throws BoardException, CannotUseHintException {
