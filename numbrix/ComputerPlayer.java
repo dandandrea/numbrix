@@ -219,7 +219,7 @@ class ComputerPlayer {
 
 			// Add to the next move list (with distance = 1, for now)
 			if (Numbrix.DEBUG) System.out.println("Adding non-preferred location " + availableLocationList.get(i));
-			nextMoveList.add(new MoveWithDistance(availableLocationList.get(i).getRow(), availableLocationList.get(i).getColumn(), nextValue,10));
+			nextMoveList.add(new MoveWithDistance(availableLocationList.get(i).getRow(), availableLocationList.get(i).getColumn(), nextValue, 1));
 		}
 
 		// Sort the (intermediary) next move list by distance
